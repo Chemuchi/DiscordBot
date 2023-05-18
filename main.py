@@ -18,12 +18,10 @@ async def on_message(message):
         return
 
     if message.content.startswith('$안녕'):
-        await message.channel.send('살점은 쓸모없는 부품이다')
-
+        await message.channel.send('안녕하세요!')
     if message.content.startswith('$삭제'):
-        await message.channel.purge(limit=30)
-        await message.chennel.send('최근 대화기록 30개를 삭제했어요.')
-
+        deleted = await message.channel.purge(limit=100)
+        await message.channel.send(f'{len(deleted)}개의 메세지를 삭제했어요!')
 
 
 client.run('MTEwODYyNDA1NzYzNDY1MjI0MA.GQfF3E.mTfdsRpzto18dKahoFg5AVp5-548R5phxiXeT4')
