@@ -18,7 +18,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('$안녕'):
-        await message.channel.send('살점은 쓸모없는 부품이다.')
+        await message.channel.send('살점은 쓸모없는 부품이다')
 
 
 
