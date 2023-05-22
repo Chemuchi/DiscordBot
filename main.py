@@ -78,7 +78,7 @@ async def on_message(message):
         embed = discord.Embed(title = "명령어 모음",description="모든 명령어는 $ 접미사를 사용합니다.\n",color =0x9CFF58)
         embed.add_field(name = '삭제',value='최근 메시지 100개를 삭제합니다.',inline=False)
         embed.add_field(name="가위,바위,보",value="가위, 바위 또는 보로 사용합니다.",inline=False)
-        embed.add_field(name="내정보", value="본인의 이름, 디스코드 가입일자, 아바타를 확인합니다.", inline=False)
+        embed.add_field(name="내정보", value="본인의 이름및태그, 디스코드 가입일자, 아바타를 확인합니다.", inline=False)
         embed.add_field(name="?, 명령어", value="명령어 리스트를 확인합니다.", inline=False)
         await message.channel.send(embed=embed,reference=message)
 
