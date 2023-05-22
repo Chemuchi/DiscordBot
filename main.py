@@ -1,6 +1,7 @@
 import discord
 import random
 import datetime
+from user import *
 from discord.app_commands import commands
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -20,17 +21,11 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    #인사
-    if message.content == '$안녕':
-        await message.channel.send('안녕하세요!',reference=message)
-    #소개
-    if message.content == '$소개':
-        await message.channel.send('저는 디스코드 봇이에요.',reference=message)
-    #메세지 삭제
+@client.event#메세지 삭제
+async  def on_message(message):
     if message.content == '$삭제':
         deleted = await message.channel.purge(limit=100)
         await message.channel.send(f'{len(deleted)}개의 메세지를 삭제했어요!',reference=message)
-    #가위바위보
     if message.content == '$가위':
         bot_response = random.randint(1, 3)
         if bot_response == 1:
@@ -82,6 +77,14 @@ async def on_message(message):
         embed.add_field(name="?, 명령어", value="명령어 리스트를 확인합니다.", inline=False)
         await message.channel.send(embed=embed,reference=message)
 
+    if message.content == '$회원가입':
+        user = message.author
+        signup(user.name, user.id)
+        await message.channel.send("정보가 등록되었습니다.",reference = message)
+
+    if message.content == '$유저정보 초기화':
+        delete()
+        await message.channel.send("Done..", reference=message)
 
 client.run(token)
 
