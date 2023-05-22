@@ -55,7 +55,7 @@ async def on_message(message):
             await message.channel.send('가위!\n하하 제가 이겼어요~',reference=message)
         elif bot_response == 3:
             await message.channel.send('바위!\n이런 제가 졌네요..',reference=message)
-
+    #내정보(이름,가입일자,아바타)
     if message.content == '$내정보':
         user = message.author
         date = datetime.datetime.utcfromtimestamp(((int(user.id) >> 22) + 1420070400000) / 1000)
@@ -66,6 +66,20 @@ async def on_message(message):
         embed.add_field(name = user,value = "", inline = False)
         embed.add_field(name="디스코드 가입일", value=year+'년 '+month+'월 '+day+"일 ", inline=True)
         embed.set_image(url=user.display_avatar)
+        await message.channel.send(embed=embed,reference=message)
+    if message.content == '$?':
+        embed = discord.Embed(title = "명령어 모음",description="모든 명령어는 $ 접미사를 사용합니다.\n",color =0x9CFF58)
+        embed.add_field(name = '삭제',value='최근 메시지 100개를 삭제합니다.',inline=False)
+        embed.add_field(name="가위,바위,보",value="$가위, $바위, $보 로 사용합니다. 말그대로 가위바위보를 합니다.",inline=False)
+        embed.add_field(name="내정보", value="본인의 이름, 디스코드 가입일자, 아바타를 확인합니다.", inline=False)
+        embed.add_field(name="?, 명령어", value="명령어 리스트를 확인합니다.", inline=False)
+        await message.channel.send(embed=embed,reference=message)
+    if message.content == '$명령어':
+        embed = discord.Embed(title = "명령어 모음",description="모든 명령어는 $ 접미사를 사용합니다.\n",color =0x9CFF58)
+        embed.add_field(name = '삭제',value='최근 메시지 100개를 삭제합니다.',inline=False)
+        embed.add_field(name="가위,바위,보",value="$가위, $바위, $보 로 사용합니다. 말그대로 가위바위보를 합니다.",inline=False)
+        embed.add_field(name="내정보", value="본인의 이름, 디스코드 가입일자, 아바타를 확인합니다.", inline=False)
+        embed.add_field(name="?, 명령어", value="명령어 리스트를 확인합니다.", inline=False)
         await message.channel.send(embed=embed,reference=message)
 
 
