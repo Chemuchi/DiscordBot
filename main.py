@@ -62,7 +62,7 @@ async  def on_message(message):
         day = str(date.day)
         wb = openpyxl.load_workbook('userDB.xlsx')
         sheet = wb.active
-        money = 0
+        money = 1
         for row in sheet.iter_rows(values_only=True):
             if row[1] == hex(user.id):
                 money = row[2]
