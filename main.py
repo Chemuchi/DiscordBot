@@ -4,7 +4,6 @@ import datetime
 from user import *
 from discord.app_commands import commands
 from urllib.request import urlopen
-from bs4 import BeautifulSoup
 
 token = 'MTEwODYyNDA1NzYzNDY1MjI0MA.GQfF3E.mTfdsRpzto18dKahoFg5AVp5-548R5phxiXeT4'
 intents = discord.Intents.default()
@@ -57,8 +56,11 @@ async  def on_message(message):
         year = str(date.year)
         month = str(date.month)
         day = str(date.day)
+        '''money, level = userInfo(user.name, user.id)'''
         embed = discord.Embed(title="유저정보",color =0x9CFF58)
         embed.add_field(name = user,value = "", inline = False)
+        '''embed.add_field(name = '레벨',value = level)
+        embed.add_field(name = '보유 자산',value = money)'''
         embed.add_field(name="디스코드 가입일", value=year+'년 '+month+'월 '+day+"일 ", inline=True)
         embed.set_image(url=user.display_avatar)
         await message.channel.send(embed=embed,reference=message)
@@ -78,13 +80,12 @@ async  def on_message(message):
         await message.channel.send(embed=embed,reference=message)
 
     if message.content == '$회원가입':
-        user = message.author
-        signup(user.name, user.id)
-        await message.channel.send("정보가 등록되었습니다.",reference = message)
+        if checkName(message.author.name, message.author.id):
+            signup(message.author.name, message.author.id)
+            await message.channel.send("사용자가 등록되었습니다.",reference = message)
+        else:
+            await message.channel.send("이미 등록된 사용자입니다.",reference = message)
 
-    if message.content == '$유저정보 초기화':
-        delete()
-        await message.channel.send("Done..", reference=message)
 
 client.run(token)
 
