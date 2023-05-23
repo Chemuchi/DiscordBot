@@ -2,11 +2,11 @@ import discord
 import random
 import datetime
 from user import *
-from token import *
+from tokenp import *
 from discord.app_commands import commands
 from urllib.request import urlopen
 
-token = token1
+token = token1()
 intents = discord.Intents.default()
 intents.message_content = True
 
