@@ -53,7 +53,7 @@ async  def on_message(message):
             await message.channel.send('가위!\n하하 제가 이겼어요~',reference=message)
         elif bot_response == 3:
             await message.channel.send('바위!\n이런 제가 졌네요..',reference=message)
-    #내정보(이름,가입일자,아바타)
+    #내정보 (이름,가입일자,아바타)
     if message.content == '$내정보':
         user = message.author
         date = datetime.utcfromtimestamp(((int(user.id) >> 22) + 1420070400000) / 1000)
