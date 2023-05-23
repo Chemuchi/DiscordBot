@@ -2,11 +2,12 @@ import discord
 import random
 import datetime
 from user import *
+from token import *
 from discord.app_commands import commands
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
-token = 'MTEwODYyNDA1NzYzNDY1MjI0MA.GQfF3E.mTfdsRpzto18dKahoFg5AVp5-548R5phxiXeT4'
+token = token1
 intents = discord.Intents.default()
 intents.message_content = True
 
