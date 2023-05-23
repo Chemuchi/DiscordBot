@@ -258,7 +258,7 @@ async  def on_message(message):
             await message.channel.send(embed=embed, reference=message)
             return
 
-        # 사용자가 마지막으로 출석한 날짜와 현재 날짜를 비교
+        # 사용자가 마지막으로 출석한 날짜와 현재 날짜를 비교합니다
         last_checkin_date = datetime.fromtimestamp(int(last_checkin, 16)).date()
         current_date = now.date()
         if current_date > last_checkin_date:
