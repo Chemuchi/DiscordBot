@@ -17,6 +17,8 @@ def checkRow():
             break
 
 def signup(_name, _id):
+    _row = checkRow()
+    
     ws.cell(row=2, column=c_name, value=_name)
     ws.cell(row=2, column=c_id, value =_id)
     ws.cell(row=2, column=c_money, value = default_money)
