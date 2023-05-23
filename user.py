@@ -17,10 +17,13 @@ def checkRow():
             break
 
 def signup(_name, _id):
+    _row = checkRow()
+
     ws.cell(row=2, column=c_name, value=_name)
     ws.cell(row=2, column=c_id, value =_id)
     ws.cell(row=2, column=c_money, value = default_money)
     ws.cell(row=2, column=c_lvl, value = 1)
+
     wb.save("userDB.xlsx")
 def checkName(_name, _id):
     for row in range(2, ws.max_row+1):
@@ -33,3 +36,12 @@ def checkName(_name, _id):
 def delete():
     ws.delete_rows(2,ws.max_row)
     wb.save("userDB.xlsx")
+
+'''def userInfo(_name, _id):
+    if not checkName(_name, _id):
+        for row in range(2, ws.max_row+2):
+    	    if ws.cell(row, 1).value == _name and ws.cell(row, 2).value == _id:
+                return ws.cell(row,1).value, ws.cell(row,2).value
+                break
+    else:
+    	return None, None'''
