@@ -174,7 +174,7 @@ async  def on_message(message):
 
                 return
 
-        # 사용자 정보를 Excel 파일에 추가하기
+        # 사용자 정보를 Excel 파일에 추가
         sheet.append([name, hex(user.id), money, last_checkin])
         wb.save('userDB.xlsx')
         embed = discord.Embed(title="유저 등록", description="", color=0x3AE9E9)
