@@ -3,30 +3,43 @@ import random
 import datetime
 import openpyxl
 import asyncio
-from tokenp import *
-from discord import Game
-from datetime import datetime
 import pytz
+import googleapiclient.discovery
+from tokenp import *
+from datetime import datetime
+
+
 
 token = token1()
+
 intents = discord.Intents.default()
+intents.members = True
 intents.message_content = True
 
 
 client = discord.Client(intents=intents)
+bot = discord.Client(intents=intents)
+
+
+
 
 @client.event
 async def on_ready():
     print(f'{client.user}실행 완료')
-async def on_ready():
-    await client.change_presence(activity=Game(name="$?, $명령어"))
+
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
+
+
 @client.event
-async  def on_message(message):
+
+async def on_message(message):
+    if message.author == client.user:
+        return
+
     if message.content.startswith("$가위바위보"):
         user = message.author
 
@@ -272,6 +285,7 @@ async  def on_message(message):
             embed.set_thumbnail(url=message.author.display_avatar)
             embed.set_footer(text=message.author.name, icon_url=message.author.display_avatar)
             await message.channel.send(embed=embed, reference=message)
+
     if message.content == "$랜덤박스":
         user = message.author
 
