@@ -272,6 +272,31 @@ async  def on_message(message):
             embed.set_thumbnail(url=message.author.display_avatar)
             embed.set_footer(text=message.author.name, icon_url=message.author.display_avatar)
             await message.channel.send(embed=embed, reference=message)
+    if message.content == "$랜덤박스":
+        user = message.author
+
+        wb = openpyxl.load_workbook("userDB.xlsx")
+        sheet = wb.active
+
+        money = None
+        for row in sheet.iter_rows(values_only=True):
+            if row[1] == hex(user.id):
+                money = row[2]
+                break
+        if money < 10000:
+            embed = discord.Embed(title="랜덤박스", description="", color=0xC64DCA)
+            embed.add_field(name='돈이 부족합니다!',value=f'{user.name}님의 전재산 : {money}',inline=False)
+            await message.channel.send(embed=embed, reference=message)
+            return
+    result = random.choices(price =[0,1000,5000,20000,50000,100000,300000,500000],per = [30, 30, 20, 10, 7, 2, 0.9, 0.1], k=1)[0]
+    if result == 0:
+        embed = discord.Embed(title='랜덤박스', description = '', color=0xC64DCA)
+        embed.add_field(name=f'저런 운도없어라~ 꽝이네요~~')
+        await message.channel.send(embed = embed,reference = message)
+    else:
+        embed = discord.Embed(title = '랜덤박스', description = '',color = 0xC64DCA)
+        embed.add_field(name = f'축하합니다!',value = f'{result}원에 당첨되셨습니다!')
+        await message.channel.send(embed = embed,reference = message)
 
     if message.content == "$랜덤박스":
         user = message.author
