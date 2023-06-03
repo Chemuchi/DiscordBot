@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from random import random
+import random
 
 import discord
 import openpyxl
@@ -34,7 +34,7 @@ async def register(ctx):
     user = ctx.author
     name = user.name
     user_id = hex(user.id)
-    money = int(30000)
+    money = int(5000)
     last_checkin = hex(int(now.timestamp()))
 
     # Excel 파일 불러오거나 없으면 UserDB 생성
@@ -56,7 +56,7 @@ async def register(ctx):
 
             return
     # 사용자 정보를 Excel 파일에 추가
-        sheet.append([name, hex(user.id), money, last_checkin])
+        sheet.append([name, hex(user.id), money,last_checkin])
         wb.save('userDB.xlsx')
         embed = discord.Embed(title="유저 등록", description="", color=0x3AE9E9)
         embed.add_field(name=ctx.author.name, value=ctx.author.id, inline=False)
@@ -84,6 +84,55 @@ async def user_info(ctx):
     embed.add_field(name="소지금", value=str(money) + "원", inline=True)
     embed.set_image(url=user.display_avatar)
     await ctx.reply(embed=embed)
+
+@bot.command(aliases=['출석'])
+async def checkin(ctx):
+    tz = pytz.timezone('Asia/Seoul')
+    now = datetime.now(tz)
+    user = ctx.author
+    wb = openpyxl.load_workbook('userDB.xlsx')
+    sheet = wb.active
+    last_checkin = None
+
+    for row in sheet.iter_rows(values_only=True):
+        if row[1] == hex(user.id):
+            last_checkin = row[3]
+            break
+
+    if last_checkin is None:
+        for row in sheet.iter_rows():
+            if row[1].value == hex(user.id):
+                row[2].value += 10000
+                row[3].value = hex(int(now.timestamp()))
+                wb.save('userDB.xlsx')
+                break
+        embed = discord.Embed(title=":gift:일일 출석", description="", color=0xDBDBDB)
+        embed.add_field(name=f"{user.name}님 출석 완료", value="", inline=False)
+        embed.set_thumbnail(url=ctx.author.display_avatar)
+        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
+        await ctx.reply(embed=embed)
+        return
+    last_checkin_date = datetime.fromtimestamp(int(last_checkin, 16)).date()
+    current_date = now.date()
+    if current_date > last_checkin_date:
+        for row in sheet.iter_rows():
+            if row[1].value == hex(user.id):
+                row[2].value += 30000
+                row[3].value = hex(int(now.timestamp()))
+                wb.save('userDB.xlsx')
+                break
+        embed = discord.Embed(title=":gift:일일 출석", description="", color=0xDBDBDB)
+        embed.add_field(name=f"{user.name}님 출석 완료", value="", inline=False)
+        embed.set_thumbnail(url=ctx.author.display_avatar)
+        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
+        await ctx.reply(embed=embed)
+    else:
+        embed = discord.Embed(title=":gift:일일 출석", description="", color=0xDBDBDB)
+        embed.add_field(name=f"{user.name}님은 이미 출석 하셨습니다.", value='', inline=False)
+        embed.set_thumbnail(url=ctx.author.display_avatar)
+        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.display_avatar)
+        await ctx.reply(embed=embed)
+
 
 '''-------------------------------------------------------------------------------------------------'''
 
@@ -135,7 +184,7 @@ async def delete(ctx,amount : int):
 '''-------------------------------------------------------------------------------------------------'''
 
 '''---------------------------------------------잡기능----------------------------------------------------'''
-''' 수정필요
+
 @bot.command(aliases=['가위바위보'])
 async def rock_paper_scissors(ctx, bet_money : int):
     user = ctx.author
@@ -153,6 +202,11 @@ async def rock_paper_scissors(ctx, bet_money : int):
         embed.add_field(name='돈을 걸어야합니다!\n사용법 : $가위바위보 (금액)', value=f'{user.name}님의 돈 : {money}', inline=False)
         await ctx.reply(embed=embed)
         return
+    if bet_money > int(50000):
+        embed = discord.Embed(title="가위바위보", description="", color=0xC19D25)
+        embed.add_field(name='50000원을 초과해서 베팅할수는 없습니다!', value=f'{user.name}님의 전재산 : {money}', inline=False)
+        await ctx.reply(embed=embed)
+        return
     if bet_money > money:
         embed = discord.Embed(title="가위바위보", description="", color=0xC19D25)
         embed.add_field(name='돈이 부족합니다!', value=f'{user.name}님의 전재산 : {money}', inline=False)
@@ -161,11 +215,6 @@ async def rock_paper_scissors(ctx, bet_money : int):
     if bet_money == 0:
         embed = discord.Embed(title="가위바위보", description="", color=0xC19D25)
         embed.add_field(name='0원을 베팅할수는 없습니다!', value=f'{user.name}님의 전재산 : {money}', inline=False)
-        await ctx.reply(embed=embed)
-        return
-    if bet_money > 50001:
-        embed = discord.Embed(title="가위바위보", description="", color=0xC19D25)
-        embed.add_field(name='50000원을 초과해서 베팅할수는 없습니다!', value=f'{user.name}님의 전재산 : {money}', inline=False)
         await ctx.reply(embed=embed)
         return
     if bet_money == None:
@@ -224,7 +273,7 @@ async def rock_paper_scissors(ctx, bet_money : int):
                     break
             embed = discord.Embed(title="가위바위보", description=" ", color=0xC19D25)
             embed.add_field(name=f"졌습니다! 봇의 선택: {bot_choice}", value=f"{user.name}님의 돈 : {money}원", inline=False)
-            await sent_message.edit(embed=embed, reference=ctx)'''
+            await sent_message.edit(embed=embed)
 
 
 
