@@ -9,3 +9,4 @@ def temp():
     element = driver.find_element(By.XPATH, '//*[@id="dgr"]')
     text = element.text
     return text
+#
