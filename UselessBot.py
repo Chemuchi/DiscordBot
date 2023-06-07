@@ -7,6 +7,7 @@ from discord.ext import commands
 from datetime import datetime
 from tokenp import *
 from Hangang import *
+from Help import *
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -20,13 +21,26 @@ async def on_ready():
     print('디스코드 로그인중..')
     print(f'{bot.user}로 로그인 되었습니다.')
     print(f'ID : {bot.user.id}')
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game('테스트'))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game('&?, &명령어, &도움'))
 
 
 @bot.command(aliases=['테스트'])
 async def hello(ctx):
     print('Console : 정상작동중..')
     await ctx.reply(f'{ctx.author.mention} 님 안녕하세요!\n{bot.user}정상 작동중입니다.')
+
+@bot.command(aliases=['?','명령어','도움'])
+async def commands(ctx):
+    embed = discord.Embed(title="명령어 모음", description="(1페이지)", color=embed_color)
+    embed.add_field(name="&등록", value="유저를 등록합니다. 유저이름, ID, 돈이 저장됩니다. ", inline=False)
+    embed.add_field(name="&내정보", value="프로필 이미지, 디스코드 가입일, 소지금이 표시됩니다.", inline=False)
+    embed.add_field(name="&출석", value="하루에 한번 5000원을 얻을수있습니다. ", inline=False)
+    embed.add_field(name="&삭제 (number)", value="number+2(명령어,확인메시지)만큼의 메세지를 삭제합니다.\n\"서버관리\" 역할이 필요합니다.", inline=False)
+    embed.add_field(name="&가위바위보 (금액)", value="돈을 걸고 가위바위보를 합니다.\n0원을 걸수는 없으며 최대 한도는 50000입니다.", inline=False)
+    embed.add_field(name="&랜덤박스", value="1000원을 걸고 랜덤박스 5개중 하나를 고릅니다. 각각 박스의 확률은 다음과 같습니다.\n500원 40%, 1000원 80%, 5000원 20%, 10000원 1%, 20000원 0.8%", inline=False)
+    embed.add_field(name="&한강", value="한강의 물 온도를 체크합니다. 웹사이트의 상태에 따라 작동 유무가 다릅니다. ", inline=False)
+    embed.set_footer(text="UselessBot...")
+    await ctx.reply(embed=embed)
 '''----------------------------------------------유저관련---------------------------------------------------'''
 @bot.command(aliases=['등록'])
 async def register(ctx):
@@ -103,7 +117,7 @@ async def checkin(ctx):
     if last_checkin is None:
         for row in sheet.iter_rows():
             if row[1].value == hex(user.id):
-                row[2].value += 10000
+                row[2].value += 5000
                 row[3].value = hex(int(now.timestamp()))
                 wb.save('userDB.xlsx')
                 break
@@ -118,7 +132,7 @@ async def checkin(ctx):
     if current_date > last_checkin_date:
         for row in sheet.iter_rows():
             if row[1].value == hex(user.id):
-                row[2].value += 30000
+                row[2].value += 5000
                 row[3].value = hex(int(now.timestamp()))
                 wb.save('userDB.xlsx')
                 break
