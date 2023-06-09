@@ -7,13 +7,14 @@ from discord.ext import commands
 from datetime import datetime
 from tokenp import *
 from Hangang import *
+from Currency import *
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="&",intents=intents)
 
 embed_color = 0x7F7F7F
-
+data_loading = '데이터를 가져오는중입니다.. 잠시만 기다려주세요...!'
 
 @bot.event
 async def on_ready():
@@ -33,9 +34,9 @@ async def hello(ctx):
 async def bot_info(ctx):
     embed = discord.Embed(title="UselessBot 입니다.", description="개인서버 프로젝트용", color=embed_color)
     embed.set_thumbnail(url="https://pngimg.com/uploads/trash_can/trash_can_PNG18441.png")
-    embed.add_field(name="🛠️관리", value="삭제", inline=False)
+    embed.add_field(name="🛠️서버관리", value="삭제", inline=False)
     embed.add_field(name="💰경제", value="등록, 출석, 가위바위보, 럭키박스", inline=False)
-    embed.add_field(name="🎸기타", value="한강, 내정보", inline=False)
+    embed.add_field(name="🎸정보", value="한강, 내정보, 환율, 환율계산", inline=False)
     embed.add_field(name="", value=" ", inline=False)
     embed.add_field(name="💻Github", value='[https://github.com/Chemuchi/DiscordBot]', inline=False)
     await ctx.send(embed=embed)
@@ -173,7 +174,7 @@ async def delete(ctx,amount : int):
             await bot_message.edit(embed=embed)
         else:
             deleted_messages = await ctx.channel.purge(limit=amount+2)
-            embed = discord.Embed(title="✂️메세지 삭제", description=" ")
+            embed = discord.Embed(title="✂️메세지 삭제", description=" ", color=embed_color)
             embed.add_field(name=f"{amount}개의 메세지를 삭제 완료했습니다.", value=f"삭제된 메세지 로그는 📜 이모지를 눌러주세요.", inline=False)
             embed.set_footer(text=f'삭제자 : {ctx.author}', icon_url=ctx.author.display_avatar)
             log_message = await ctx.send(embed=embed)
@@ -184,7 +185,10 @@ async def delete(ctx,amount : int):
             try:
                 reaction, user = await bot.wait_for('reaction_add', timeout=5.0, check=check)
             except asyncio.TimeoutError:
-                pass
+                embed.clear_fields()
+                embed.add_field(name=f"{amount}개의 메세지를 삭제 완료했습니다.", value=f"", inline=False)
+                await log_message.edit(embed=embed)
+                await log_message.clear_reactions()
             else:
                 log_message = '\n'.join([f'{ctx.author}: {message.content}' for message in reversed(deleted_messages)])
                 await ctx.author.send(f'요청하신 메세지 로그입니다.\n\n{log_message}')
@@ -361,11 +365,176 @@ async def randombox(ctx):
 @bot.command(aliases=['한강'])
 async def hangang(ctx):
     embed = discord.Embed(title="🌡️한강 물 온도", description="", color=embed_color)
-    embed.add_field(name='데이터를 가져오는중입니다.. 잠시 기다려주세요..!', value="", inline=False)
+    embed.add_field(name=data_loading, value="", inline=False)
     sent_message = await ctx.reply(embed=embed)
     embed.clear_fields()
     embed.add_field(name=f"현재 한강의 온도는 ", value=f"{temp()}입니다.", inline=False)
     await sent_message.edit(embed=embed)
+
+@bot.command(aliases=['환율'])
+async def exchange(ctx):
+    flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
+    embed = discord.Embed(title=":currency_exchange:환율", description="", color=embed_color)
+    embed.add_field(name='나라를 선택해주세요!', value="", inline=False)
+    sent_message = await ctx.reply(embed=embed)
+    for flag in flags:
+        await sent_message.add_reaction(flag)
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in flags
+
+    try:
+        reaction, user = await bot.wait_for('reaction_add', timeout=7.0, check=check)
+    except asyncio.TimeoutError:
+        embed.clear_fields()
+        embed.add_field(name='시간이 초과되었습니다.',value='',inline=False)
+        await sent_message.edit(embed=embed)
+        await sent_message.clear_reactions()
+    else:
+        embed.clear_fields()
+        embed.add_field(name=data_loading, value='',inline=False)
+        await sent_message.edit(embed=embed)
+        if str(reaction.emoji) == '🇺🇸':
+            embed.clear_fields()
+            embed.add_field(name=f'1 달러는 {US()}원 입니다.', value='',inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇯🇵':
+            embed.clear_fields()
+            embed.add_field(name=f'100 엔은 {JP()}원 입니다.', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇬🇧':
+            embed.clear_fields()
+            embed.add_field(name=f'1 파운드는 {GB()}원 입니다.', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇪🇺':
+            embed.clear_fields()
+            embed.add_field(name=f'1 유로는 {EU()}원 입니다.', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇹🇷':
+            embed.clear_fields()
+            embed.add_field(name=f'1 리라는 {TR()}원 입니다.', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+@bot.command(aliases=['환율계산'])
+async def exchange_calc(ctx, amount : int):
+    flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
+    choices = ['1️⃣', '2️⃣']
+    embed = discord.Embed(title=":currency_exchange:환율 계산", description="", color=embed_color)
+    embed.add_field(name='계산 옵션을 선택해주세요.', value="원 에서 외화는 1️⃣, 외화 에서 원은 2️⃣ 를 눌러주세요.", inline=False)
+    sent_message = await ctx.reply(embed=embed)
+    for choice in choices:
+        await sent_message.add_reaction(choice)
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in choices
+
+    try:
+        reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+    except asyncio.TimeoutError:
+        embed.clear_fields()
+        embed.add_field(name='시간이 초과되었습니다.',value='', inline=False)
+        await sent_message.edit(embed=embed)
+        await sent_message.clear_reactions()
+    else:
+        if str(reaction.emoji) == '1️⃣':
+            await sent_message.clear_reactions()
+            embed.clear_fields()
+            embed.add_field(name='나라를 선택해주세요!', value="", inline=False)
+            await sent_message.edit(embed=embed)
+            for flag in flags:
+                await sent_message.add_reaction(flag)
+
+            def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) in flags
+
+            try:
+                reaction, user = await bot.wait_for('reaction_add', timeout=7.0, check=check)
+            except asyncio.TimeoutError:
+                embed.clear_fields()
+                embed.add_field(name='시간이 초과되었습니다.', value='', inline=False)
+                await sent_message.edit(embed=embed)
+                await sent_message.clear_reactions()
+            else:
+                embed.clear_fields()
+                embed.add_field(name=data_loading, value='', inline=False)
+                await sent_message.edit(embed=embed)
+                if str(reaction.emoji) == '🇺🇸':
+                    embed.clear_fields()
+                    formatted_value = f'{amount / US():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}원은 약 {formatted_value}달러 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇯🇵':
+                    embed.clear_fields()
+                    formatted_value = f'{(amount * 100) / JP():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}원은 약 {formatted_value}엔 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇬🇧':
+                    embed.clear_fields()
+                    formatted_value = f'{amount / GB():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}원은 약 {formatted_value}파운드 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇪🇺':
+                    embed.clear_fields()
+                    formatted_value = f'{amount / EU():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}원은 약 {formatted_value}유로 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇹🇷':
+                    embed.clear_fields()
+                    formatted_value = f'{amount / TR():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}원은 약 {formatted_value}리라 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+        elif str(reaction.emoji) == '2️⃣':
+            await sent_message.clear_reactions()
+            embed.clear_fields()
+            embed.add_field(name='나라를 선택해주세요!', value="", inline=False)
+            await sent_message.edit(embed=embed)
+            for flag in flags:
+                await sent_message.add_reaction(flag)
+
+            def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) in flags
+
+            try:
+                reaction, user = await bot.wait_for('reaction_add', timeout=7.0, check=check)
+            except asyncio.TimeoutError:
+                embed.clear_fields()
+                embed.add_field(name='시간이 초과되었습니다.', value='', inline=False)
+                await sent_message.edit(embed=embed)
+                await sent_message.clear_reactions()
+            else:
+                embed.clear_fields()
+                embed.add_field(name=data_loading, value='', inline=False)
+                await sent_message.edit(embed=embed)
+                if str(reaction.emoji) == '🇺🇸':
+                    embed.clear_fields()
+                    formatted_value = f'{amount * US():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}달러는 약 {formatted_value}원 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇯🇵':
+                    embed.clear_fields()
+                    formatted_value = f'{(amount * JP()) / 100:,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}엔은 약 {formatted_value}원 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇬🇧':
+                    embed.clear_fields()
+                    formatted_value = f'{amount * GB():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}파운드는 약 {formatted_value}원 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇪🇺':
+                    embed.clear_fields()
+                    formatted_value = f'{amount * EU():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}유로는 약 {formatted_value}원 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+                elif str(reaction.emoji) == '🇹🇷':
+                    embed.clear_fields()
+                    formatted_value = f'{amount * TR():,.2f}'.rstrip('0').rstrip('.')
+                    embed.add_field(name=f'{amount}리라는 약 {formatted_value}원 입니다.', value='', inline=False)
+                    await sent_message.edit(embed=embed)
+
 
 '''-------------------------------------------------------------------------------------------------'''
 
