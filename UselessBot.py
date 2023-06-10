@@ -93,7 +93,7 @@ async def user_info(ctx):
             money = row[2]
             break
     embed = discord.Embed(title="🪪유저정보", color=embed_color)
-    embed.add_field(name=user, value="", inline=False)
+    embed.add_field(name=f'{user.display_name}', value="", inline=False)
     embed.add_field(name="디스코드 가입일", value=year + '년 ' + month + '월 ' + day + "일 ", inline=True)
     embed.add_field(name="소지금", value=str(money) + "원", inline=True)
     embed.set_image(url=user.display_avatar)
@@ -242,9 +242,9 @@ async def rock_paper_scissors(ctx, bet_money : int):
     choices = ['✊', '✌️', '🖐️']
     bot_choice = random.choice(choices)
     embed = discord.Embed(title="가위바위보", description="10초 내로 선택하세요!", color=embed_color)
-    embed.add_field(name="주먹", value="✊", inline=True)
-    embed.add_field(name="가위", value="✌️", inline=True)
-    embed.add_field(name="보", value="🖐️", inline=True)
+    embed.add_field(name="주먹", value="✊", inline=False)
+    embed.add_field(name="가위", value="✌️", inline=False)
+    embed.add_field(name="보", value="🖐️", inline=False)
     sent_message = await ctx.reply(embed=embed)
     for choice in choices:
         await sent_message.add_reaction(choice)
@@ -267,7 +267,7 @@ async def rock_paper_scissors(ctx, bet_money : int):
                     wb.save("userDB.xlsx")
                     break
             embed = discord.Embed(title="가위바위보", description=" ", color=embed_color)
-            embed.add_field(name=f"비겼습니다! 봇의 선택: {bot_choice}", value=f"{user.name}님의 남은 돈 : {money}원", inline=False)
+            embed.add_field(name=f"비겼습니다! 봇의 선택 : {bot_choice} {user.name}님의 선택 : {reaction.emoji}", value=f"{user.name}님의 남은 돈 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
         elif (str(reaction.emoji) == '✊' and bot_choice == '✌️') or (
                 str(reaction.emoji) == '✌️' and bot_choice == '🖐️') or (
@@ -279,8 +279,9 @@ async def rock_paper_scissors(ctx, bet_money : int):
                     money += bet_money
                     wb.save("userDB.xlsx")
                     break
-            embed.add_field(name=f"이겼습니다! 봇의 선택: {bot_choice}", value=f"{user.name}님의 돈 : {money}원", inline=False)
+            embed.add_field(name=f"이겼습니다! 봇의 선택 : {bot_choice} {user.name}님의 선택 : {reaction.emoji}" , value=f"{user.name}님의 돈 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
+            await sent_message.clear_reactions()
 
         else:
             for row in sheet.iter_rows():
@@ -290,8 +291,9 @@ async def rock_paper_scissors(ctx, bet_money : int):
                     wb.save("userDB.xlsx")
                     break
             embed = discord.Embed(title="가위바위보", description=" ", color=0x7F7F7F)
-            embed.add_field(name=f"졌습니다! 봇의 선택: {bot_choice}", value=f"{user.name}님의 돈 : {money}원", inline=False)
+            embed.add_field(name=f"졌습니다! 봇의 선택 : {bot_choice} {user.name}님의 선택 : {reaction.emoji}", value=f"{user.name}님의 돈 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
+            await sent_message.clear_reactions()
 
 @bot.command(aliases=['랜덤박스'])
 async def randombox(ctx):
@@ -361,6 +363,7 @@ async def randombox(ctx):
             embed = discord.Embed(title="랜덤박스", description=" ", color=embed_color)
             embed.add_field(name=f"{selected_money}원 당첨!", value=f"{user.name}의  전재산 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
+            await sent_message.clear_reactions()
 
 @bot.command(aliases=['한강'])
 async def hangang(ctx):
@@ -419,8 +422,9 @@ async def exchange(ctx):
             embed.add_field(name=f'1 리라는 {TR()}원 입니다.', value='', inline=False)
             await sent_message.edit(embed=embed)
             pass
+        await sent_message.clear_reactions()
 @bot.command(aliases=['환율계산'])
-async def exchange_calc(ctx, amount : int):
+async def exchange_calc(ctx, amount : float):
     flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
     choices = ['1️⃣', '2️⃣']
     embed = discord.Embed(title=":currency_exchange:환율 계산", description="", color=embed_color)
@@ -487,6 +491,7 @@ async def exchange_calc(ctx, amount : int):
                     formatted_value = f'{amount / TR():,.2f}'.rstrip('0').rstrip('.')
                     embed.add_field(name=f'{amount}원은 약 {formatted_value}리라 입니다.', value='', inline=False)
                     await sent_message.edit(embed=embed)
+                await sent_message.clear_reactions()
         elif str(reaction.emoji) == '2️⃣':
             await sent_message.clear_reactions()
             embed.clear_fields()
@@ -534,6 +539,7 @@ async def exchange_calc(ctx, amount : int):
                     formatted_value = f'{amount * TR():,.2f}'.rstrip('0').rstrip('.')
                     embed.add_field(name=f'{amount}리라는 약 {formatted_value}원 입니다.', value='', inline=False)
                     await sent_message.edit(embed=embed)
+                await sent_message.clear_reactions()
 
 
 '''-------------------------------------------------------------------------------------------------'''
