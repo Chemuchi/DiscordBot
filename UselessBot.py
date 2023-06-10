@@ -3,6 +3,10 @@ import random
 import discord
 import openpyxl
 import pytz
+import yt_dlp as youtube_dl
+import re
+import googleapiclient.discovery
+import googleapiclient.errors
 from discord.ext import commands
 from datetime import datetime
 from tokenp import *
@@ -540,6 +544,109 @@ async def exchange_calc(ctx, amount : float):
                     embed.add_field(name=f'{amount}리라는 약 {formatted_value}원 입니다.', value='', inline=False)
                     await sent_message.edit(embed=embed)
                 await sent_message.clear_reactions()
+
+
+
+'''-------------------------------------------노래---------------------------------------------------'''
+
+youtube_dl.utils.bug_reports_message = lambda: ''
+
+
+ytdl_format_options = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+}
+
+ffmpeg_options = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'options': '-vn',
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+class YTDLSource(discord.PCMVolumeTransformer):
+    def __init__(self, source, *, data, volume=0.5):
+        super().__init__(source, volume)
+
+        self.data = data
+
+        self.title = data.get('title')
+        self.url = data.get('url')
+
+    @classmethod
+    async def from_url(cls, url, *, loop=None, stream=False):
+        loop = loop or asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        filename = data['url'] if stream else ytdl.prepare_filename(data)
+        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+
+@bot.command(aliases=['재생','ㅔ','p'])
+
+def extract_video_id(url):
+    # Extract video id from URL
+    match = re.search(r"youtube\.com/.*v=([^&]*)", url)
+    if match:
+        return match.group(1)
+    return None
+
+def get_captions(youtube, video_id):
+    request = youtube.captions().list(
+        part="snippet",
+        videoId=video_id
+    )
+    response = request.execute()
+    return response
+
+youtube = googleapiclient.discovery.build("youtube", "v3", credentials=googleAPIToken())
+captions = get_captions(youtube, "YOUR_VIDEO_ID")
+
+async def join_voice(ctx,url ):
+    embed = discord.Embed(title=f'노래 재생', description='', color=embed_color)
+    if ctx.author.voice and ctx.author.voice.channel:
+        channel = ctx.author.voice.channel
+        embed.add_field(name='노래 재생', value='', inline=False)
+        await channel.connect()
+        if not ctx.voice_client.is_playing():
+            player = await YTDLSource.from_url(url, loop=bot.loop, stream=True)
+            ctx.voice_client.play(player, after=lambda e: print('player error : %s' %e) if e else None)
+            video_id = extract_video_id(url)
+    else:
+        embed.add_field(name='음성 채널에 입장하고 실행해주세요!', value='', inline=False)
+        sent_message = await ctx.reply(embed=embed)
+
+
+
+@bot.command(aliases=['종료','나가','s'])
+async def leave_voice(ctx):
+    embed = discord.Embed(title=f'노래 재생', description='', color=embed_color)
+    try:
+        await ctx.voice_client.disconnect()
+        embed.add_field(name='노래를 멈추고 음성 채널에서 나갑니다.', value='', inline=False)
+        sent_message = await ctx.reply(embed=embed)
+    except IndexError as error_message:
+        embed.add_field(name='음성 채널에 유저나 봇이 존재하지않습니다. 입장후 퇴장시켜주세요.', value='', inline=False)
+        sent_message = await ctx.reply(embed=embed)
+    except AttributeError as not_found_channel:
+        embed.add_field(name='봇이 있는 채널을 찾지 못했습니다.', value='', inline=False)
+        sent_message = await ctx.reply(embed=embed)
+
+
+
+
 
 
 '''-------------------------------------------------------------------------------------------------'''
