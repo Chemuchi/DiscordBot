@@ -12,6 +12,7 @@ from datetime import datetime
 from tokenp import *
 from Hangang import *
 from Currency import *
+from Translate import *
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -545,7 +546,56 @@ async def exchange_calc(ctx, amount : float):
                     await sent_message.edit(embed=embed)
                 await sent_message.clear_reactions()
 
+@bot.command(aliases=['번역'])
+async def translator(ctx,text : str):
+    flags = ['🇺🇸', '🇯🇵', '🇰🇷', '🇨🇳', '🇷🇺']
+    embed = discord.Embed(title="번역", description="", color=embed_color)
+    embed.set_footer(text='번역 제공 : Naver Papago')
+    embed.add_field(name='나라를 선택해주세요!', value="선택하신 나라의 언어로 번역됩니다.", inline=False)
+    sent_message = await ctx.reply(embed=embed)
+    for flag in flags:
+        await sent_message.add_reaction(flag)
 
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in flags
+
+    try:
+        reaction, user = await bot.wait_for('reaction_add', timeout=7.0, check=check)
+    except asyncio.TimeoutError:
+        embed.clear_fields()
+        embed.add_field(name='시간이 초과되었습니다.', value='', inline=False)
+        await sent_message.edit(embed=embed)
+        await sent_message.clear_reactions()
+    else:
+        embed.clear_fields()
+        embed.add_field(name='번역중입니다..', value='', inline=False)
+        await sent_message.edit(embed=embed)
+        if str(reaction.emoji) == '🇺🇸':
+            embed.clear_fields()
+            embed.add_field(name=f'{translate(text,"en")}', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇯🇵':
+            embed.clear_fields()
+            embed.add_field(name=f'{translate(text, "ja")}', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇰🇷':
+            embed.clear_fields()
+            embed.add_field(name=f'{translate(text, "kr")}', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇨🇳':
+            embed.clear_fields()
+            embed.add_field(name=f'{translate(text, "zh-CN")}', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        elif str(reaction.emoji) == '🇷🇺':
+            embed.clear_fields()
+            embed.add_field(name=f'{translate(text, "ru")}', value='', inline=False)
+            await sent_message.edit(embed=embed)
+            pass
+        await sent_message.clear_reactions()
 
 '''-------------------------------------------노래---------------------------------------------------'''
 
@@ -594,7 +644,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         filename = data['url'] if stream else ytdl.prepare_filename(data)
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
-@bot.command(aliases=['재생','ㅔ','p'])
+'''@bot.command(aliases=['재생','ㅔ','p'])
 
 def extract_video_id(url):
     # Extract video id from URL
@@ -643,7 +693,7 @@ async def leave_voice(ctx):
     except AttributeError as not_found_channel:
         embed.add_field(name='봇이 있는 채널을 찾지 못했습니다.', value='', inline=False)
         sent_message = await ctx.reply(embed=embed)
-
+'''
 
 
 
