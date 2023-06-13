@@ -4,15 +4,14 @@ import discord
 import openpyxl
 import pytz
 import yt_dlp as youtube_dl
-import re
-import googleapiclient.discovery
-import googleapiclient.errors
+
 from discord.ext import commands
 from datetime import datetime
 from tokenp import *
 from Hangang import *
 from Currency import *
 from Translate import *
+from Imgur import *
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -34,14 +33,19 @@ async def hello(ctx):
     print('Console : 정상작동중..')
     await ctx.reply(f'{ctx.author.mention} 님 안녕하세요!\n{bot.user}정상 작동중입니다.')
 
+@bot.command(aliases=['강제종료'])
+async def forceoff(ctx):
+    await ctx.send('봇을 강제로 종료합니다.')
+    await bot.close()
 
 @bot.command(aliases=['봇정보','정보'])
 async def bot_info(ctx):
     embed = discord.Embed(title="UselessBot 입니다.", description="개인서버 프로젝트용", color=embed_color)
     embed.set_thumbnail(url="https://pngimg.com/uploads/trash_can/trash_can_PNG18441.png")
     embed.add_field(name="🛠️서버관리", value="삭제", inline=False)
-    embed.add_field(name="💰경제", value="등록, 출석, 가위바위보, 럭키박스", inline=False)
-    embed.add_field(name="🎸정보", value="한강, 내정보, 환율, 환율계산", inline=False)
+    embed.add_field(name="💰경제", value="등록, 출석, 내정보", inline=False)
+    embed.add_field(name=":slot_machine:재미", value="가위바위보, 랜덤박스, 랜덤, imgur", inline=False)
+    embed.add_field(name="🎸기타", value="번역, 환율, 환율계산", inline=False)
     embed.add_field(name="", value=" ", inline=False)
     embed.add_field(name="💻Github", value='[https://github.com/Chemuchi/DiscordBot]', inline=False)
     await ctx.send(embed=embed)
@@ -369,6 +373,21 @@ async def randombox(ctx):
             embed.add_field(name=f"{selected_money}원 당첨!", value=f"{user.name}의  전재산 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
             await sent_message.clear_reactions()
+
+@bot.command(aliases=['랜덤'])
+async def imgur_random_word(ctx):
+    image_url = get_random_image(random_words())
+    search_word = str(random_words())
+    await ctx.reply(image_url)
+
+@bot.command(aliases=['imgur'])
+async def imgur_random_image(ctx,*args):
+    text = ' '.join(args)
+    image_url = get_random_image(text)
+    await ctx.reply(image_url)
+
+
+'''-----------------------------------------------------------------------------------------'''
 
 @bot.command(aliases=['한강'])
 async def hangang(ctx):
