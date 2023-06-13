@@ -9,3 +9,9 @@ def NaverClientID():
 
 def NaverClientSecret():
     return 'ASG3yqEv7o'
+
+def ImgurClientID():
+    return '8cd12ba44df7d1d'
+
+def ImgurClientSecret():
+    return '3a73cd0e1c355c387358179b1bb0e8777b7c8716'
