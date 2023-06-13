@@ -547,7 +547,8 @@ async def exchange_calc(ctx, amount : float):
                 await sent_message.clear_reactions()
 
 @bot.command(aliases=['번역'])
-async def translator(ctx,text : str):
+async def translator(ctx,*args):
+    text = ' '.join(args)
     flags = ['🇺🇸', '🇯🇵', '🇰🇷', '🇨🇳', '🇷🇺']
     embed = discord.Embed(title="번역", description="", color=embed_color)
     embed.set_footer(text='번역 제공 : Naver Papago')
@@ -582,7 +583,7 @@ async def translator(ctx,text : str):
             pass
         elif str(reaction.emoji) == '🇰🇷':
             embed.clear_fields()
-            embed.add_field(name=f'{translate(text, "kr")}', value='', inline=False)
+            embed.add_field(name=f'{translate(text, "ko")}', value='', inline=False)
             await sent_message.edit(embed=embed)
             pass
         elif str(reaction.emoji) == '🇨🇳':
