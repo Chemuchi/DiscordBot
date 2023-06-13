@@ -7,6 +7,9 @@ import yt_dlp as youtube_dl
 
 from discord.ext import commands
 from datetime import datetime
+
+from discord.ext.commands import MissingRequiredArgument, CommandInvokeError
+
 from tokenp import *
 from Hangang import *
 from Currency import *
@@ -163,9 +166,9 @@ async def checkin(ctx):
 
 @bot.command(aliases=['삭제'])
 async def delete(ctx,amount : int):
+    embed = discord.Embed(title="✂️메세지 삭제", description="", color=embed_color)
     role = discord.utils.get(ctx.guild.roles, name='서버관리')
     if role in ctx.author.roles:
-        embed = discord.Embed(title="✂️메세지 삭제", description="", color=embed_color)
         embed.add_field(name=f'정말로 삭제하시겠습니까? 이 행동은 되돌릴 수 없습니다!!', value=f'{amount}만큼의 메세지가 삭제됩니다.', inline=False)
         bot_message = await ctx.reply(embed=embed)
 
@@ -206,6 +209,12 @@ async def delete(ctx,amount : int):
         embed = discord.Embed(title="✂️메세지 삭제", description=" ", color=embed_color)
         embed.add_field(name="이 명령어를 실행할 권한이 없습니다.", value=f" ",inline=False)
         await ctx.reply(embed=embed)
+@delete.error
+async def delete_error(ctx, error):
+    if isinstance(error, MissingRequiredArgument):
+        embed = discord.Embed(title="✂️메세지 삭제", description=" ", color=embed_color)
+        embed.add_field(name='삭제할 메세지 수를 입력해주세요.',value='명렁어+봇답장 총 n+2 의 메세지가 삭제됩니다.',inline=False)
+        await ctx.reply(embed=embed)
 
 '''-------------------------------------------------------------------------------------------------'''
 
@@ -221,13 +230,6 @@ async def rock_paper_scissors(ctx, bet_money : int):
         if row[1] == hex(user.id):
             money = row[2]
             break
-    try:
-        bet_money = int(bet_money)
-    except IndexError:
-        embed = discord.Embed(title="가위바위보", description="", color=embed_color)
-        embed.add_field(name='돈을 걸어야합니다!\n사용법 : $가위바위보 (금액)', value=f'{user.name}님의 돈 : {money}', inline=False)
-        await ctx.reply(embed=embed)
-        return
     if bet_money > int(50000):
         embed = discord.Embed(title="가위바위보", description="", color=embed_color)
         embed.add_field(name='50000원을 초과해서 베팅할수는 없습니다!', value=f'{user.name}님의 전재산 : {money}', inline=False)
@@ -303,6 +305,20 @@ async def rock_paper_scissors(ctx, bet_money : int):
             embed.add_field(name=f"졌습니다! 봇의 선택 : {bot_choice} {user.name}님의 선택 : {reaction.emoji}", value=f"{user.name}님의 돈 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
             await sent_message.clear_reactions()
+@rock_paper_scissors.error
+async def rpc_error(ctx,error):
+    user = ctx.author
+    wb = openpyxl.load_workbook('userDB.xlsx')
+    sheet = wb.active
+    money = 0
+    for row in sheet.iter_rows(values_only=True):
+        if row[1] == hex(user.id):
+            money = row[2]
+            break
+    if isinstance(error, MissingRequiredArgument):
+        embed = discord.Embed(title="가위바위보", description="", color=embed_color)
+        embed.add_field(name='돈을 걸어야합니다!', value=f'{user.name}님의 돈 : {money}', inline=False)
+        await ctx.reply(embed=embed)
 
 @bot.command(aliases=['랜덤박스'])
 async def randombox(ctx):
@@ -317,7 +333,7 @@ async def randombox(ctx):
             money = row[2]
             break
     if money < 1000:
-        embed = discord.Embed(title="랜덤박스", description="", color=0x7F7F7F)
+        embed = discord.Embed(title=":moneybag: 랜덤박스", description="", color=embed_color)
         embed.add_field(name='돈이 부족합니다! (1000원)', value=f'{user.name}님의 전재산  : {money}', inline=False)
         await ctx.reply(embed=embed)
         return
@@ -331,7 +347,7 @@ async def randombox(ctx):
         money_list = [500, 1000, 5000, 10000, 20000]
         money_probability = [0.4, 0.8, 0.2, 0.01, 0.008]
 
-        embed = discord.Embed(title="랜덤박스", description="", color=0x7F7F7F)
+        embed = discord.Embed(title=":moneybag: 랜덤박스", description="", color=embed_color)
         embed.add_field(name='이모지 하나를 선택해주세요!', value='', inline=False)
         sent_message = await ctx.reply(embed=embed)
 
@@ -350,7 +366,7 @@ async def randombox(ctx):
         try:
             reaction, user = await bot.wait_for('reaction_add', timeout=10.0, check=check)
         except asyncio.TimeoutError:
-            embed = discord.Embed(title="랜덤박스", description=" ", color=embed_color)
+            embed = discord.Embed(title=":moneybag: 랜덤박스", description=" ", color=embed_color)
             embed.add_field(name='시간초과!', value="", inline=False)
             await sent_message.edit(embed=embed)
             await sent_message.clear_reactions()
@@ -369,7 +385,7 @@ async def randombox(ctx):
                     money = row[2]
                     wb.save("userDB.xlsx")
                     break
-            embed = discord.Embed(title="랜덤박스", description=" ", color=embed_color)
+            embed = discord.Embed(title=":moneybag: 랜덤박스", description=" ", color=embed_color)
             embed.add_field(name=f"{selected_money}원 당첨!", value=f"{user.name}의  전재산 : {money}원", inline=False)
             await sent_message.edit(embed=embed)
             await sent_message.clear_reactions()
@@ -385,9 +401,16 @@ async def imgur_random_image(ctx,*args):
     text = ' '.join(args)
     image_url = get_random_image(text)
     await ctx.reply(image_url)
+@imgur_random_image.error
+async def iri_error(ctx, error):
+    if isinstance(error, CommandInvokeError):
+        embed = discord.Embed(title="🔎 Imgur", description=" ", color=embed_color)
+        embed.add_field(name='검색어를 입력해주세요.',value=' ',inline=False)
+        await ctx.reply(embed=embed)
 
 
 '''-----------------------------------------------------------------------------------------'''
+'''-----------------------------------------정보-----------------------------------------------'''
 
 @bot.command(aliases=['한강'])
 async def hangang(ctx):
@@ -401,7 +424,7 @@ async def hangang(ctx):
 @bot.command(aliases=['환율'])
 async def exchange(ctx):
     flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
-    embed = discord.Embed(title=":currency_exchange:환율", description="", color=embed_color)
+    embed = discord.Embed(title=":currency_exchange: 환율", description="", color=embed_color)
     embed.add_field(name='나라를 선택해주세요!', value="", inline=False)
     sent_message = await ctx.reply(embed=embed)
     for flag in flags:
@@ -451,7 +474,7 @@ async def exchange(ctx):
 async def exchange_calc(ctx, amount : float):
     flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
     choices = ['1️⃣', '2️⃣']
-    embed = discord.Embed(title=":currency_exchange:환율 계산", description="", color=embed_color)
+    embed = discord.Embed(title=":currency_exchange: 환율 계산", description="", color=embed_color)
     embed.add_field(name='계산 옵션을 선택해주세요.', value="원 에서 외화는 1️⃣, 외화 에서 원은 2️⃣ 를 눌러주세요.", inline=False)
     sent_message = await ctx.reply(embed=embed)
     for choice in choices:
@@ -564,12 +587,23 @@ async def exchange_calc(ctx, amount : float):
                     embed.add_field(name=f'{amount}리라는 약 {formatted_value}원 입니다.', value='', inline=False)
                     await sent_message.edit(embed=embed)
                 await sent_message.clear_reactions()
+@exchange_calc.error
+async def ec_error(ctx, error):
+    if isinstance(error, MissingRequiredArgument):
+        embed = discord.Embed(title=":currency_exchange: 환율 계산", description=" ", color=embed_color)
+        embed.add_field(name='계산할 금액을 입력해주세요.', value=' ', inline=False)
+        await ctx.reply(embed=embed)
 
 @bot.command(aliases=['번역'])
 async def translator(ctx,*args):
+    embed = discord.Embed(title=":pager: 번역", description="", color=embed_color)
+    embed.set_footer(text='번역 제공 : Naver Papago')
+    if not args:
+        embed.add_field(name='번역할 단어 또는 문장을 입력해주세요.',value='',inline=False)
+        await ctx.reply(embed=embed)
+        return
     text = ' '.join(args)
     flags = ['🇺🇸', '🇯🇵', '🇰🇷', '🇨🇳', '🇷🇺']
-    embed = discord.Embed(title="번역", description="", color=embed_color)
     embed.set_footer(text='번역 제공 : Naver Papago')
     embed.add_field(name='나라를 선택해주세요!', value="선택하신 나라의 언어로 번역됩니다.", inline=False)
     sent_message = await ctx.reply(embed=embed)
