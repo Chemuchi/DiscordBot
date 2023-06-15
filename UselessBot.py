@@ -409,6 +409,8 @@ async def iri_error(ctx, error):
         await ctx.reply(embed=embed)
 
 
+
+
 '''-----------------------------------------------------------------------------------------'''
 '''-----------------------------------------정보-----------------------------------------------'''
 
@@ -622,33 +624,25 @@ async def translator(ctx,*args):
         await sent_message.clear_reactions()
     else:
         embed.clear_fields()
-        embed.add_field(name='번역중입니다..', value='', inline=False)
         await sent_message.edit(embed=embed)
+
         if str(reaction.emoji) == '🇺🇸':
-            embed.clear_fields()
             embed.add_field(name=f'{translate(text,"en")}', value='', inline=False)
-            await sent_message.edit(embed=embed)
             pass
         elif str(reaction.emoji) == '🇯🇵':
-            embed.clear_fields()
             embed.add_field(name=f'{translate(text, "ja")}', value='', inline=False)
-            await sent_message.edit(embed=embed)
             pass
         elif str(reaction.emoji) == '🇰🇷':
-            embed.clear_fields()
             embed.add_field(name=f'{translate(text, "ko")}', value='', inline=False)
-            await sent_message.edit(embed=embed)
             pass
         elif str(reaction.emoji) == '🇨🇳':
-            embed.clear_fields()
             embed.add_field(name=f'{translate(text, "zh-CN")}', value='', inline=False)
-            await sent_message.edit(embed=embed)
             pass
         elif str(reaction.emoji) == '🇷🇺':
-            embed.clear_fields()
             embed.add_field(name=f'{translate(text, "ru")}', value='', inline=False)
-            await sent_message.edit(embed=embed)
             pass
+
+        await sent_message.edit(embed=embed)
         await sent_message.clear_reactions()
 
 '''-------------------------------------------노래---------------------------------------------------'''
