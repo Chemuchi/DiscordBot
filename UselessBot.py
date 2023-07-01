@@ -41,8 +41,8 @@ async def forceoff(ctx):
     await ctx.send('봇을 강제로 종료합니다.')
     await bot.close()
 
-@bot.command(aliases=['봇정보','정보'])
-async def bot_info(ctx):
+@bot.command(aliases=['봇정보','정보','명령어'])
+async def commands(ctx):
     embed = discord.Embed(title="UselessBot 입니다.", description="개인서버 프로젝트용", color=embed_color)
     embed.set_thumbnail(url="https://pngimg.com/uploads/trash_can/trash_can_PNG18441.png")
     embed.add_field(name="🛠️서버관리", value="삭제", inline=False)
@@ -52,6 +52,11 @@ async def bot_info(ctx):
     embed.add_field(name="", value=" ", inline=False)
     embed.add_field(name="💻Github", value='[https://github.com/Chemuchi/DiscordBot]', inline=False)
     await ctx.send(embed=embed)
+
+'''@bot.command(aliases=['사용법','help'])
+async def command_help(ctx,arg):
+    if arg=='삭제'
+    '''
 '''----------------------------------------------유저관련---------------------------------------------------'''
 @bot.command(aliases=['등록'])
 async def register(ctx):
@@ -647,101 +652,6 @@ async def translator(ctx,*args):
 
 '''-------------------------------------------노래---------------------------------------------------'''
 
-youtube_dl.utils.bug_reports_message = lambda: ''
-
-
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-
-ffmpeg_options = {
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': '-vn',
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-
-        self.data = data
-
-        self.title = data.get('title')
-        self.url = data.get('url')
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-
-        filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
-
-'''@bot.command(aliases=['재생','ㅔ','p'])
-
-def extract_video_id(url):
-    # Extract video id from URL
-    match = re.search(r"youtube\.com/.*v=([^&]*)", url)
-    if match:
-        return match.group(1)
-    return None
-
-def get_captions(youtube, video_id):
-    request = youtube.captions().list(
-        part="snippet",
-        videoId=video_id
-    )
-    response = request.execute()
-    return response
-
-youtube = googleapiclient.discovery.build("youtube", "v3", credentials=googleAPIToken())
-captions = get_captions(youtube, "YOUR_VIDEO_ID")
-
-async def join_voice(ctx,url ):
-    embed = discord.Embed(title=f'노래 재생', description='', color=embed_color)
-    if ctx.author.voice and ctx.author.voice.channel:
-        channel = ctx.author.voice.channel
-        embed.add_field(name='노래 재생', value='', inline=False)
-        await channel.connect()
-        if not ctx.voice_client.is_playing():
-            player = await YTDLSource.from_url(url, loop=bot.loop, stream=True)
-            ctx.voice_client.play(player, after=lambda e: print('player error : %s' %e) if e else None)
-            video_id = extract_video_id(url)
-    else:
-        embed.add_field(name='음성 채널에 입장하고 실행해주세요!', value='', inline=False)
-        sent_message = await ctx.reply(embed=embed)
-
-
-
-@bot.command(aliases=['종료','나가','s'])
-async def leave_voice(ctx):
-    embed = discord.Embed(title=f'노래 재생', description='', color=embed_color)
-    try:
-        await ctx.voice_client.disconnect()
-        embed.add_field(name='노래를 멈추고 음성 채널에서 나갑니다.', value='', inline=False)
-        sent_message = await ctx.reply(embed=embed)
-    except IndexError as error_message:
-        embed.add_field(name='음성 채널에 유저나 봇이 존재하지않습니다. 입장후 퇴장시켜주세요.', value='', inline=False)
-        sent_message = await ctx.reply(embed=embed)
-    except AttributeError as not_found_channel:
-        embed.add_field(name='봇이 있는 채널을 찾지 못했습니다.', value='', inline=False)
-        sent_message = await ctx.reply(embed=embed)
-'''
 
 
 
