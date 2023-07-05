@@ -2,7 +2,6 @@ import asyncio
 import discord
 import openpyxl
 import pytz
-import interactions
 
 from discord.ext import commands
 from discord.ext.commands import MissingRequiredArgument, CommandInvokeError
