@@ -1,24 +1,24 @@
 import asyncio
-import random
 import discord
 import openpyxl
 import pytz
-import yt_dlp as youtube_dl
+import interactions
 
 from discord.ext import commands
+from discord.ext.commands import MissingRequiredArgument, CommandInvokeError
+from discord import app_commands
 from datetime import datetime
 
-from discord.ext.commands import MissingRequiredArgument, CommandInvokeError
-
-from tokenp import *
-from Hangang import *
 from Currency import *
-from Translate import *
+from Hangang import *
 from Imgur import *
+from Translate import *
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="&",intents=intents)
+'''client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)'''
 
 embed_color = 0x7F7F7F
 data_loading = '데이터를 가져오는중입니다.. 잠시만 기다려주세요...!'
@@ -30,6 +30,18 @@ async def on_ready():
     print(f'ID : {bot.user.id}')
     await bot.change_presence(status=discord.Status.online, activity=discord.Game('작동'))
 
+'''@tree.command(name = "commandname", description = "My first application Command", guild=discord.Object(id=913302339518103572)) #Add the guild ids in which the slash command will appear. If it should be in all, remove the argument, but note that it will take some time (up to an hour) to register the command if it's for all guilds.
+async def first_command(interaction):
+    await interaction.response.send_message("Hello!")
+
+@client.event
+async def on_ready():
+    await tree.sync(guild=discord.Object(id=913302339518103572))
+    print("Ready!")
+'''
+@bot.command(aliases=['ping'])
+async def ping_latency(ctx):
+    await ctx.send(f'{round(round(bot.latency, 4)*1000)}ms')
 
 @bot.command(aliases=['테스트'])
 async def hello(ctx):
@@ -48,15 +60,11 @@ async def commands(ctx):
     embed.add_field(name="🛠️서버관리", value="삭제", inline=False)
     embed.add_field(name="💰경제", value="등록, 출석, 내정보", inline=False)
     embed.add_field(name=":slot_machine:재미", value="가위바위보, 랜덤박스, 랜덤, imgur", inline=False)
-    embed.add_field(name="🎸기타", value="번역, 환율, 환율계산", inline=False)
+    embed.add_field(name="🎸기타", value="번역, 환율, 환율계산, ping", inline=False)
     embed.add_field(name="", value=" ", inline=False)
     embed.add_field(name="💻Github", value='[https://github.com/Chemuchi/DiscordBot]', inline=False)
     await ctx.send(embed=embed)
 
-'''@bot.command(aliases=['사용법','help'])
-async def command_help(ctx,arg):
-    if arg=='삭제'
-    '''
 '''----------------------------------------------유저관련---------------------------------------------------'''
 @bot.command(aliases=['등록'])
 async def register(ctx):
@@ -419,14 +427,14 @@ async def iri_error(ctx, error):
 '''-----------------------------------------------------------------------------------------'''
 '''-----------------------------------------정보-----------------------------------------------'''
 
-@bot.command(aliases=['한강'])
+'''@bot.command(aliases=['한강'])
 async def hangang(ctx):
     embed = discord.Embed(title="🌡️한강 물 온도", description="", color=embed_color)
     embed.add_field(name=data_loading, value="", inline=False)
     sent_message = await ctx.reply(embed=embed)
     embed.clear_fields()
     embed.add_field(name=f"현재 한강의 온도는 ", value=f"{temp()}입니다.", inline=False)
-    await sent_message.edit(embed=embed)
+    await sent_message.edit(embed=embed)'''
 
 @bot.command(aliases=['환율'])
 async def exchange(ctx):
