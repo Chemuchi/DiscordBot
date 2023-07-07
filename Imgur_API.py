@@ -1,6 +1,9 @@
-from tokenp import *
 import random
+
 import requests
+
+from tokenp import *
+
 
 def random_words():
     words = ['trap', 'mate', 'instrument', 'chemical', 'cart', 'assignment', 'slope', 'marriage', 'theater', 'consumer',

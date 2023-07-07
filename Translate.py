@@ -1,7 +1,6 @@
-import os
-import sys
-import urllib.request
 import json
+import urllib.request
+
 from tokenp import *
 
 client_id = NaverClientID() # 개발자센터에서 발급받은 Client ID 값

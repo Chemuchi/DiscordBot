@@ -10,14 +10,12 @@ from datetime import datetime
 
 from Currency import *
 from Hangang import *
-from Imgur import *
+from Imgur_API import *
 from Translate import *
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="&",intents=intents)
-'''client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)'''
+bot = commands.Bot(command_prefix="&",intents=discord.Intents.all())
 
 embed_color = 0x7F7F7F
 data_loading = '데이터를 가져오는중입니다.. 잠시만 기다려주세요...!'
@@ -28,41 +26,37 @@ async def on_ready():
     print(f'{bot.user}로 로그인 되었습니다.')
     print(f'ID : {bot.user.id}')
     await bot.change_presence(status=discord.Status.online, activity=discord.Game('작동'))
+    await bot.tree.sync(guild=discord.Object(id=913302339518103572))
 
-'''@tree.command(name = "commandname", description = "My first application Command", guild=discord.Object(id=913302339518103572)) #Add the guild ids in which the slash command will appear. If it should be in all, remove the argument, but note that it will take some time (up to an hour) to register the command if it's for all guilds.
-async def first_command(interaction):
-    await interaction.response.send_message("Hello!")
+@bot.hybrid_command(name='핑',description='봇의 핑을 알려줍니다.')
+async def ping(ctx):
+    await ctx.reply(f'{round(bot.latency * 1000)}ms')
 
-@client.event
-async def on_ready():
-    await tree.sync(guild=discord.Object(id=913302339518103572))
-    print("Ready!")
-'''
-@bot.command(aliases=['ping'])
-async def ping_latency(ctx):
-    await ctx.send(f'{round(round(bot.latency, 4)*1000)}ms')
 
-@bot.command(aliases=['테스트'])
+@bot.hybrid_command(name='테스트',description='봇이 작동중인지 확인합니다.')
 async def hello(ctx):
-    print('Console : 정상작동중..')
-    await ctx.reply(f'{ctx.author.mention} 님 안녕하세요!\n{bot.user}정상 작동중입니다.')
+    await ctx.reply(f'봇 {bot.user.mention} 정상 작동중 입니다.')
 
-@bot.command(aliases=['강제종료'])
-async def forceoff(ctx):
-    await ctx.send('봇을 강제로 종료합니다.')
-    await bot.close()
+@bot.hybrid_command(name='강제종료',description='봇을 강제로 종료합니다.')
+async def force_off(ctx):
+    role = discord.utils.get(ctx.guild.roles, name='서버관리')
+    if role in ctx.author.roles:
+        await ctx.reply('봇을 강제로 종료합니다.')
+        await bot.close()
+    else:
+        await ctx.reply('권한이 없습니다.')
 
-@bot.command(aliases=['봇정보','정보','명령어'])
-async def commands(ctx):
+@bot.hybrid_command(name='도움말',description='봇의 정보와 명령어들을 확인합니다.')
+async def help_command(ctx):
     embed = discord.Embed(title="UselessBot 입니다.", description="개인서버 프로젝트용", color=embed_color)
-    embed.set_thumbnail(url="https://pngimg.com/uploads/trash_can/trash_can_PNG18441.png")
+    embed.set_thumbnail(url=bot.user.avatar)
     embed.add_field(name="🛠️서버관리", value="삭제", inline=False)
     embed.add_field(name="💰경제", value="등록, 출석, 내정보", inline=False)
     embed.add_field(name=":slot_machine:재미", value="가위바위보, 랜덤박스, 랜덤, imgur", inline=False)
     embed.add_field(name="🎸기타", value="번역, 환율, 환율계산, ping", inline=False)
     embed.add_field(name="", value=" ", inline=False)
-    embed.add_field(name="💻Github", value='[https://github.com/Chemuchi/DiscordBot]', inline=False)
-    await ctx.send(embed=embed)
+    embed.add_field(name="💻Github", value='[https://github.com/Chemuchi]', inline=False)
+    await ctx.reply(embed=embed)
 
 '''----------------------------------------------유저관련---------------------------------------------------'''
 @bot.command(aliases=['등록'])
@@ -402,15 +396,16 @@ async def randombox(ctx):
             await sent_message.edit(embed=embed)
             await sent_message.clear_reactions()
 
-@bot.command(aliases=['랜덤'])
+@bot.hybrid_command(name='랜덤이미지',description='imgur 에서 랜덤한 이미지를 가져옵니다.')
 async def imgur_random_word(ctx):
     image_url = get_random_image(random_words())
     search_word = str(random_words())
     await ctx.reply(image_url)
 
-@bot.command(aliases=['imgur'])
-async def imgur_random_image(ctx,*args):
-    text = ' '.join(args)
+
+@bot.hybrid_command(name='imgur',description='imgur 에서 이미지를 검색합니다.')
+async def imgur_random_image(ctx,검색어: str):
+    text = ' '.join(검색어)
     image_url = get_random_image(text)
     await ctx.reply(image_url)
 @imgur_random_image.error
@@ -435,7 +430,7 @@ async def hangang(ctx):
     embed.add_field(name=f"현재 한강의 온도는 ", value=f"{temp()}입니다.", inline=False)
     await sent_message.edit(embed=embed)'''
 
-@bot.command(aliases=['환율'])
+@bot.hybrid_command(name='환율',description='실시간 환율을 확인하고 계산합니다.')
 async def exchange(ctx):
     flags = ['🇺🇸', '🇯🇵', '🇬🇧', '🇪🇺', '🇹🇷']
     embed = discord.Embed(title=":currency_exchange: 환율", description="", color=embed_color)
@@ -666,4 +661,7 @@ async def translator(ctx,*args):
 
 '''-------------------------------------------------------------------------------------------------'''
 
-bot.run(token1())
+async def main():
+    await bot.start(token1())
+
+asyncio.run(main())
