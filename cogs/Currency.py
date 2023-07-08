@@ -10,7 +10,7 @@ from tokens import guild_id
 
 
 
-class Currency(commands.Cog):
+class currency(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -52,5 +52,5 @@ class Currency(commands.Cog):
 
 
 async def setup(client):
-    await client.add_cog(Currency(client), guilds=[discord.Object(id=guild_id())])
+    await client.add_cog(currency(client), guilds=[discord.Object(id=guild_id())])
 

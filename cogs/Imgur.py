@@ -7,7 +7,7 @@ from discord import app_commands
 from tokens import guild_id
 
 
-class Imgur(commands.Cog):
+class imgur(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     @commands.Cog.listener()
@@ -27,4 +27,4 @@ class Imgur(commands.Cog):
         await ctx.reply(image_url)
 
 async def setup(client):
-    await client.add_cog(Imgur(client),guilds=[discord.Object(id=guild_id())])
+    await client.add_cog(imgur(client),guilds=[discord.Object(id=guild_id())])
