@@ -5,13 +5,11 @@ import pytz
 
 from discord.ext import commands
 from discord.ext.commands import MissingRequiredArgument, CommandInvokeError
-from discord import app_commands
 from datetime import datetime
 
-from Currency import *
-from Hangang import *
-from Imgur_API import *
-from Translate import *
+from API.Currency_API import *
+from API.Imgur_API import *
+from API.Translate_API import *
 
 intents = discord.Intents.default()
 intents.message_content = True
