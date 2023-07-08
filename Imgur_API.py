@@ -2,7 +2,7 @@ import random
 
 import requests
 
-from tokenp import *
+from tokens import *
 
 
 def random_words():

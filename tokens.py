@@ -15,3 +15,6 @@ def ImgurClientID():
 
 def ImgurClientSecret():
     return '3a73cd0e1c355c387358179b1bb0e8777b7c8716'
+
+def guild_id():
+    return '913302339518103572'
