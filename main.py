@@ -6,12 +6,11 @@ import asyncio
 
 client = commands.Bot(command_prefix=".",intents=discord.Intents.all())
 guild_id = 913302339518103572
-
+owner_id = 298745336506220545
 @client.event
 async def on_ready():
     await client.tree.sync(guild=discord.Object(id=guild_id))
     print('성공: 봇이 정상적으로 디스코드에 연결되었습니다.')
-
 
 
 async def load():
@@ -23,14 +22,33 @@ async def load():
 async def ping(ctx: commands.Context):
     await ctx.reply(f"{round(client.latency * 1000)}ms.")
 
-@client.hybrid_command(name="강제종료",description="봇을 강제로 종료합니다. 특별한 역할이 필요합니다.", guild=discord.Object(id=guild_id))
+@client.hybrid_command(name="강제종료",description="개발자 전용", guild=discord.Object(id=guild_id))
 async def force_off(ctx: commands.Context):
-    role = discord.utils.get(ctx.guild.roles, name='서버관리')
-    if role in ctx.author.roles :
-        await ctx.reply('봇을 강제로 종료합니다.')
+    if ctx.author.id == owner_id:
+        await ctx.reply("봇을 강제로 종료합니다.")
         await client.close()
-    else :
-        await ctx.reply('권한이 없습니다.')
+    await ctx.reply("개발자가 아닙니다.")
+
+#추가할거: 삭제로그 DM 으로 전송하기
+@client.hybrid_command(name='삭제',description="원하는 만큼 메세지를 삭제합니다.", guild=discord.Object(id=guild_id))
+async def del_messages(ctx: commands.Context, 수량: int):
+    num = 수량
+    role = discord.utils.get(ctx.guild.roles, name="서버관리")
+    if role in ctx.author.roles:
+        await ctx.channel.purge(limit=num)
+        await ctx.send(f"{num}만큼의 메세지가 삭제되었습니다.")
+    else:
+        await ctx.reply("권한이 없습니다.")
+
+@client.hybrid_command(name="아이디",description="본인의 디스코드 고유번호 를 확인합니다.", guild=discord.Object(id=guild_id))
+async def user_id(ctx: commands.Context):
+    await ctx.reply(ctx.author.id)
+
+
+
+
+
+
 async def main():
     async with client:
         await load()
