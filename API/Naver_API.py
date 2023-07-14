@@ -39,3 +39,36 @@ def translate(text, target_lang):
         return (result['message']['result']['translatedText'])
     else:
         return("Error Code:" + rescode)
+
+def dic(text):
+    encText = urllib.parse.quote(text)
+    url = "https://openapi.naver.com/v1/search/encyc.json?query=" + encText  # JSON 결과
+    request = urllib.request.Request(url)
+    request.add_header("X-Naver-Client-Id", client_id)
+    request.add_header("X-Naver-Client-Secret", client_secret)
+    response = urllib.request.urlopen(request)
+    rescode = response.getcode()
+    if (rescode == 200) :
+        response_body = response.read()
+        data = json.loads(response_body.decode('utf-8'))
+        items = data['items']
+        min_description = min(items, key=lambda x: len(x['description']))
+        return min_description['description']
+    else :
+        return("Error Code:" + rescode)
+
+def short_url(text):
+    encText = urllib.parse.quote(text)
+    data = "url=" + encText
+    url = "https://openapi.naver.com/v1/util/shorturl"
+    request = urllib.request.Request(url)
+    request.add_header("X-Naver-Client-Id", client_id)
+    request.add_header("X-Naver-Client-Secret", client_secret)
+    response = urllib.request.urlopen(request, data=data.encode("utf-8"))
+    rescode = response.getcode()
+    if (rescode == 200) :
+        response_body = response.read()
+        result = json.loads(response_body.decode('utf-8'))
+        return (result['result']['url'])
+    else :
+        print("Error Code:" + rescode)

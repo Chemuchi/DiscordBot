@@ -1,6 +1,6 @@
 import discord
 import requests
-from API.Translate_API import *
+from API.Naver_API import *
 from discord.ext import commands
 from discord import app_commands
 

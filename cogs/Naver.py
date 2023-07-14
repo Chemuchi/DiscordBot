@@ -1,7 +1,7 @@
 from typing import List
 
 import discord
-from API.Translate_API import *
+from API.Naver_API import *
 from discord.ext import commands
 from discord import app_commands
 
@@ -28,6 +28,14 @@ class translator(commands.Cog):
             app_commands.Choice(name=cur, value=cur)
             for cur in cur if current.lower() in cur.lower()
         ]
+
+    @commands.hybrid_command(name='백과사전', description='입력한 단어를 네이버 백과사전에 검색합니다.')
+    async def dict(self, ctx: commands.Context, 단어: str):
+        await ctx.reply(dic(단어))
+
+    @commands.hybrid_command(name="단축링크",description='입력한 url을 짧게 줄여줍니다.')
+    async def short_url(self, ctx: commands.Context, 링크: str):
+        await ctx.reply(short_url(링크))
 
 
 async def setup(client):
