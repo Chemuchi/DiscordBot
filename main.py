@@ -5,7 +5,7 @@ import os
 import asyncio
 
 client = commands.Bot(command_prefix=".",intents=discord.Intents.all())
-guild_id = 913302339518103572
+guild_id = 1127150995013640194
 owner_id = 298745336506220545
 @client.event
 async def on_ready():
