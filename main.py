@@ -29,16 +29,7 @@ async def force_off(ctx: commands.Context):
         await client.close()
     await ctx.reply("개발자가 아닙니다.")
 
-#추가할거: 삭제로그 DM 으로 전송하기
-@client.hybrid_command(name='삭제',description="원하는 만큼 메세지를 삭제합니다.", guild=discord.Object(id=guild_id))
-async def del_messages(ctx: commands.Context, 수량: int):
-    num = 수량
-    role = discord.utils.get(ctx.guild.roles, name="서버관리")
-    if role in ctx.author.roles:
-        await ctx.channel.purge(limit=num)
-        await ctx.send(f"{num}만큼의 메세지가 삭제되었습니다.")
-    else:
-        await ctx.reply("권한이 없습니다.")
+
 
 @client.hybrid_command(name="아이디",description="본인의 디스코드 고유번호 를 확인합니다.", guild=discord.Object(id=guild_id))
 async def user_id(ctx: commands.Context):
