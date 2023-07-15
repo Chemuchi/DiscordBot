@@ -24,6 +24,8 @@ class hangang(commands.Cog):
         temp = data['temp']
         if temp == '점검중':
             await ctx.reply("현재 시스템이 점검중입니다.")
+        elif temp == '온도 정보를 불러오지 못했습니다.':
+            await ctx.reply("API 에서 온도 정보를 불러오지 못했습니다.")
         else:
             await ctx.reply(f"현재 한강수온은 {temp}도 입니다.")
 
