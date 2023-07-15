@@ -1,7 +1,7 @@
 import json
 import urllib.request
 
-from tokens import *
+from tokens import NaverClientID, NaverClientSecret
 
 client_id = NaverClientID() # 개발자센터에서 발급받은 Client ID 값
 client_secret = NaverClientSecret() # 개발자센터에서 발급받은 Client Secret 값

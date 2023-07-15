@@ -19,5 +19,5 @@ def ImgurClientSecret():
 def guild_id():
     return '1127150995013640194'
 
-def riot_token():
-    return 'RGAPI-e787774a-7218-4461-816c-134d7b684a5e'
+def Word_API():
+    return 'F836629BE6A5E9817D8D75ECE2905067'
