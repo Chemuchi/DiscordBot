@@ -1,11 +1,9 @@
 import discord
-import requests
-import json
 
 from discord.ext import commands
-from discord import app_commands
-
 from tokens import guild_id
+from API.Hangang_API import hangang_temp
+
 
 
 class hangang(commands.Cog):
@@ -19,9 +17,7 @@ class hangang(commands.Cog):
 
     @commands.hybrid_command(name="한강", description="코인이라도 떨어지셨나? 호호~")
     async def hangang(self, ctx: commands.Context):
-        response = requests.get('https://api.hangang.msub.kr/')
-        data = json.loads(response.text)
-        temp = data['temp']
+        temp = hangang_temp()
         if temp == '점검중':
             await ctx.reply("현재 시스템이 점검중입니다.")
         elif temp == '온도 정보를 불러오지 못했습니다.':

@@ -22,7 +22,7 @@ class s_word(commands.Cog):
         await ctx.reply(embed = word_embed)
 
     #역량 부족
-    '''@commands.hybrid_command(name='끝말잇기', description='AI와 끝말잇기를 합니다.')
+    """@commands.hybrid_command(name='끝말잇기', description='AI와 끝말잇기를 합니다.')
     async def wordchain(self,ctx: commands.Context):
         thread = await ctx.channel.create_thread(
             name=f"{ctx.author}의 {random.randint(1,100000)}번 끝말잇기 쓰레드",
@@ -48,7 +48,7 @@ class s_word(commands.Cog):
                 break
             await thread.send(f"AI의 단어: {word}")
             last_word = word[-1]
-            await thread.send(f"다음 단어를 입력하세요 ({last_word}): ")'''
+            await thread.send(f"다음 단어를 입력하세요 ({last_word}): ")"""
 
 
 

@@ -27,7 +27,7 @@ def word(word):
     return definitions
 
 #역량부족
-'''def get_word_info(word):
+"""def get_word_info(word):
     url = 'https://stdict.korean.go.kr/api/search.do'
     params = {
         "key": key,
@@ -62,4 +62,4 @@ def choose_next_word(last_word):
     valid_words = [word for word in words if is_valid_word(word)]
     if not valid_words:
         return None
-    return random.choice(valid_words)'''
+    return random.choice(valid_words)"""
