@@ -1,7 +1,4 @@
-import random
-
 import requests
-import json
 
 from tokens import Word_API
 

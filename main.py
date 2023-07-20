@@ -29,8 +29,6 @@ async def force_off(ctx: commands.Context):
         await client.close()
     await ctx.reply("개발자가 아닙니다.")
 
-
-
 @client.hybrid_command(name="아이디",description="본인의 디스코드 고유번호 를 확인합니다.", guild=discord.Object(id=guild_id))
 async def user_id(ctx: commands.Context):
     await ctx.reply(ctx.author.id)
