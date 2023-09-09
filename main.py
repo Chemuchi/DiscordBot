@@ -36,11 +36,11 @@ async def ping(ctx: commands.Context):
 
 @client.hybrid_command(name="강제종료",description="봇 관리자 전용", guild=discord.Object(id=guild_id))
 async def force_off(ctx: commands.Context):
-    if ctx.author.id == owner_id:
+    if ctx.author.id == int(owner_id):
         await ctx.reply("봇을 강제로 종료합니다.")
         await client.close()
-    await ctx.reply("봇 관리자가 아닙니다.")
-
+    else:
+        await ctx.reply(f"봇 관리자가 아닙니다.\n관리자의 아이디 : {owner_id} / 사용자의 아이디 : {ctx.author.id}")
 @client.hybrid_command(name="아이디",description="본인의 디스코드 고유번호 를 확인합니다.", guild=discord.Object(id=guild_id))
 async def user_id(ctx: commands.Context):
     await ctx.reply(ctx.author.id)
