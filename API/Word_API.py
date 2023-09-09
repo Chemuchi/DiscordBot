@@ -1,8 +1,21 @@
+import json
+import os
+
 import requests
 
-from tokens import Word_API
 
-key = Word_API()
+# 현재 스크립트 파일의 경로를 얻습니다.
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# 상위 폴더의 경로를 얻습니다.
+parent_dir = os.path.dirname(script_dir)
+# config.json 파일의 경로를 생성합니다.
+config_path = os.path.join(parent_dir, 'config.json')
+
+# 파일을 읽어올 때 config_path를 사용합니다.
+with open(config_path, 'r') as f:
+    config = json.load(f)
+
+key = config["word_token"]["token"]
 
 def word(word):
     definitions = []
@@ -22,41 +35,3 @@ def word(word):
         definitions.append(definition)
 
     return definitions
-
-#역량부족
-"""def get_word_info(word):
-    url = 'https://stdict.korean.go.kr/api/search.do'
-    params = {
-        "key": key,
-        "q": word,
-        "advanced": "y",
-        "pos": 1
-    }
-    response = requests.get(url, params=params)
-    return response.json()
-
-def is_valid_word(word):
-    if word[-1] in ['즘', '틱', '늄', '슘', '퓸', '늬', '뺌', '섯', '숍', '튼', '름', '늠', '쁨']:
-        return False
-    word_info = get_word_info(word)
-    if not word_info["data"]:
-        return False
-    return True
-
-def choose_next_word(last_word):
-    url = 'https://stdict.korean.go.kr/api/search.do'
-    params = {
-        "key": key,
-        "q": last_word,
-        "advanced": "y",
-        "pos": 1,
-        "method": "start",
-        "num": 100,
-    }
-    response = requests.get(url, params=params)
-    data = response.json()
-    words = [item["word"] for item in data["data"]]
-    valid_words = [word for word in words if is_valid_word(word)]
-    if not valid_words:
-        return None
-    return random.choice(valid_words)"""

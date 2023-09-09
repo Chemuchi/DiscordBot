@@ -1,7 +1,18 @@
-import discord, random
+import discord
 from discord.ext import commands
 from API.Word_API import *
-from tokens import guild_id
+
+# 현재 스크립트 파일의 경로를 얻습니다.
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# 상위 폴더의 경로를 얻습니다.
+parent_dir = os.path.dirname(script_dir)
+# config.json 파일의 경로를 생성합니다.
+config_path = os.path.join(parent_dir, 'config.json')
+
+# 파일을 읽어올 때 config_path를 사용합니다.
+with open(config_path, 'r') as f:
+    config = json.load(f)
+guild_id = config['guild_id']['id']
 
 class s_word(commands.Cog):
     def __init__(self, bot):
@@ -21,39 +32,7 @@ class s_word(commands.Cog):
             word_embed.add_field(name=" ", value=f"**【{i + 1}】** {definition}", inline=False)
         await ctx.reply(embed = word_embed)
 
-    #역량 부족
-    """@commands.hybrid_command(name='끝말잇기', description='AI와 끝말잇기를 합니다.')
-    async def wordchain(self,ctx: commands.Context):
-        thread = await ctx.channel.create_thread(
-            name=f"{ctx.author}의 {random.randint(1,100000)}번 끝말잇기 쓰레드",
-            type=discord.ChannelType.private_thread,
-        )
-        await thread.add_user(ctx.author)
-        await ctx.send(f"{thread.name} 에서 이동후 진행해주세요.")
-        await thread.send("제시어를 입력해주세요.")
-        def check(m):
-            m.channel == thread and m.author == ctx.author
-            return
-
-        while True :
-            message = await self.bot.wait_for('message', check=check)
-            word = message.content
-            if not is_valid_word(word) :
-                await thread.send("잘못된 단어입니다. 다시 입력하세요.")
-                continue
-            last_word = word[-1]
-            word = choose_next_word(last_word)
-            if not word :
-                await thread.send("AI가 이겼습니다!")
-                break
-            await thread.send(f"AI의 단어: {word}")
-            last_word = word[-1]
-            await thread.send(f"다음 단어를 입력하세요 ({last_word}): ")"""
-
-
-
-
 
 
 async def setup(client):
-    await client.add_cog(s_word(client),guilds=[discord.Object(id=guild_id())])
+    await client.add_cog(s_word(client),guilds=[discord.Object(id=guild_id)])
