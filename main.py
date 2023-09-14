@@ -22,6 +22,8 @@ print("연결중입니다..")
 @client.event
 async def on_ready():
     await client.tree.sync(guild=discord.Object(id=guild_id))
+    game = discord.Game(f"{command_prefix}정보 로 기본사항을 확인")
+    await client.change_presence(status=discord.Status.online, activity=game)
     print('성공: 봇이 정상적으로 디스코드에 연결되었습니다.')
 
 
@@ -40,7 +42,7 @@ async def force_off(ctx: commands.Context):
         await ctx.reply("봇을 강제로 종료합니다.")
         await client.close()
     else:
-        await ctx.reply(f"봇 관리자가 아닙니다.\n관리자의 아이디 : {owner_id} / 사용자의 아이디 : {ctx.author.id}")
+        await ctx.reply(f"봇 관리자가 아닙니다.\n관리자의 아이디 : {owner_id} / {ctx.author.name}님의 아이디 : {ctx.author.id}")
 @client.hybrid_command(name="아이디",description="본인의 디스코드 고유번호 를 확인합니다.", guild=discord.Object(id=guild_id))
 async def user_id(ctx: commands.Context):
     await ctx.reply(ctx.author.id)
