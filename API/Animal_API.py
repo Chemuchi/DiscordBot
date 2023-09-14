@@ -1,5 +1,4 @@
-import requests
-import json
+import requests, json
 
 def cat():
     response = requests.get('https://api.thecatapi.com/v1/images/search')
