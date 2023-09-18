@@ -1,5 +1,4 @@
 import urllib.request
-import os
 import json
 from setting import naver_clientsec, naver_clientid
 

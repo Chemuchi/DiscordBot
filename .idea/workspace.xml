@@ -4,21 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59b2da0c-85ba-43cd-afbb-f0cd10fab029" name="변경" comment="presence 변경">
-      <change beforePath="$PROJECT_DIR$/API/Animal_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Animal_API.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/API/Imgur_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Imgur_API.py" afterDir="false" />
+    <list default="true" id="59b2da0c-85ba-43cd-afbb-f0cd10fab029" name="변경" comment="config.json 값을 setting.py 에서 불러오도록 변경. 그에 따른 코드 최적화">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/API/Naver_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Naver_API.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/API/Word_API.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/Word_API.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cogs/Animals.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Animals.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cogs/Currency.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Currency.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cogs/Delete.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Delete.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cogs/Facts.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Facts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cogs/Hangang.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Hangang.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cogs/Imgur.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Imgur.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cogs/Naver.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Naver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cogs/QRCode.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/QRCode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cogs/Word.py" beforeDir="false" afterPath="$PROJECT_DIR$/cogs/Word.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setting.py" beforeDir="false" afterPath="$PROJECT_DIR$/setting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +157,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694692624493</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="config.json 값을 setting.py 에서 불러오도록 변경. 그에 따른 코드 최적화">
+      <created>1694704810584</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1694704810584</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -208,6 +211,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="." />
     <MESSAGE value="presence 변경" />
-    <option name="LAST_COMMIT_MESSAGE" value="presence 변경" />
+    <MESSAGE value="config.json 값을 setting.py 에서 불러오도록 변경. 그에 따른 코드 최적화" />
+    <option name="LAST_COMMIT_MESSAGE" value="config.json 값을 setting.py 에서 불러오도록 변경. 그에 따른 코드 최적화" />
   </component>
 </project>

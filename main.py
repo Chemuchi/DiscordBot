@@ -2,14 +2,14 @@ import discord
 from discord.ext import commands
 import os
 import asyncio
-from setting import guild_id, cmd_prefix, owner_id
+from setting import guild_id, cmd_prefix, owner_id, bot_token, embed_color
 
 
 client = commands.Bot(command_prefix=cmd_prefix(),intents=discord.Intents.all())
 
 
-
-token = input("실행을 위해 봇 토큰을 입력해주세요. >> ")
+embed_color = embed_color()
+token = bot_token()
 print("토큰이 확인되었습니다.")
 print("연결중입니다..")
 
@@ -43,7 +43,7 @@ async def user_id(ctx: commands.Context):
 
 @client.hybrid_command(name='정보',description='봇의 정보를 확인합니다.',guild=discord.Object(id=guild_id()))
 async def info(ctx: commands.Context):
-    embed = discord.Embed(color=0xFFFFFF,title='개인 프로젝트용 디스코드봇',)
+    embed = discord.Embed(color=embed_color,title='개인 프로젝트용 디스코드봇',)
     embed.set_author(name='UselessBot')
     embed.add_field(name='하이브리드 커맨드를 지원합니다.',value=f'command prefix는 config 에서 변경 가능합니다.\n현재 설정은 {cmd_prefix()} 입니다.',inline=False)
     embed.add_field(name='현재 서버의 봇 관리자는 config 에 디스코드 아이디를 기입해주세요.',value='봇 관리자만이 디스코드 내에서 봇 강제종료가 가능합니다.',inline=False)

@@ -3,6 +3,12 @@ import json
 with open("config.json","r") as f:
     config = json.load(f)
 
+def bot_token():
+    return config['bot_token']['token']
+
+def embed_color():
+    return config['embed_color']['value']
+
 def owner_id():
     return config['owner_id']['id']
 

@@ -1,4 +1,10 @@
 {
+  "bot_token": {
+    "token": "MTEwODYyNDA1NzYzNDY1MjI0MA.GVQRhe.q9Io-91Ogw2EwgxDkjaVTzMpf0N33OsPj5wGDQ"
+  },
+  "embed_color":{
+    "value":"0xFFFFFF"
+  },
   "command_prefix":{
     "value":".",
     "_comment": "slash_command 를 사용하지 않을때 사용하는 command_prefix 입니다. 가능하면 다른 봇과 겹치지 않게 설정해주세요. 예) value 값이 ! 일땐 !정보"

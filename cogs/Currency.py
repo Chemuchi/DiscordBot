@@ -2,7 +2,7 @@ from typing import List
 
 import discord
 from currency_converter import CurrencyConverter
-from setting import guild_id
+from setting import guild_id, embed_color
 
 from discord.ext import commands
 from discord import app_commands
@@ -21,7 +21,7 @@ class currency(commands.Cog):
     async def currency(self, ctx: commands.Context, 기준_통화: str, 목표_통화: str, 금액: int):
         c = CurrencyConverter()
         amount = c.convert(금액, 기준_통화, 목표_통화)
-        currency_embed = discord.Embed(title="환율 계산",description="",color= 0x7F7F7F)
+        currency_embed = discord.Embed(title="환율 계산",description="",color= embed_color())
         currency_embed.add_field(name=f"{금액:,.0f}", value=기준_통화, inline = True)
         currency_embed.add_field(name=":currency_exchange:" , value="", inline=True)
         currency_embed.add_field(name=f"{amount:,.2f}", value=목표_통화, inline=True)
